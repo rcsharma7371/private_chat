@@ -1,0 +1,23 @@
+{
+  "name": "talk-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:server": "npm run dev --workspace=@talk/server",
+    "dev:web": "npm run dev --workspace=@talk/web",
+    "build": "npm run build --workspaces --if-present",
+    "build:shared": "npm run build --workspace=@talk/shared",
+    "build:server": "npm run build --workspace=@talk/server",
+    "build:web": "npm run build --workspace=@talk/web",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

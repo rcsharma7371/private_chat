@@ -1,0 +1,54 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Room {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  slug           String        @unique
+  codeVerifier   String?       // null = link exists, code not created yet (AWAITING_CODE)
+  codeSalt       String?
+  locked         Boolean       @default(false)
+  disappearAfter Int?          // seconds
+  failedAttempts Int           @default(0)
+  lockedUntil    DateTime?
+  createdAt      DateTime      @default(now())
+  lastActivityAt DateTime      @default(now())
+  participants   Participant[]
+  messages       Message[]
+
+  @@index([lastActivityAt])
+}
+
+model Participant {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  roomId       String   @db.ObjectId
+  slotIndex    Int      // 0 or 1 (enforces max 2 participant slots)
+  devicePubKey String   // ECDSA public key (JWK / base64)
+  ecdhPubKey   String
+  displayName  String?
+  joinedAt     DateTime @default(now())
+  room         Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, slotIndex])
+  @@unique([roomId, devicePubKey])
+}
+
+model Message {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  roomId     String    @db.ObjectId
+  senderSlot Int
+  counter    Int
+  iv         String
+  ciphertext Bytes
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime?
+  room       Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, counter])
+  @@index([expiresAt])
+}

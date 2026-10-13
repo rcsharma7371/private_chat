@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-900 text-zinc-100 min-h-screen overflow-x-hidden font-sans;
+  }
+}
+
+/* Custom discreet scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(17, 19, 26, 0.4);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Privacy tab blur effect when window is unfocused or tab hidden */
+.privacy-blur {
+  filter: blur(16px) brightness(0.6);
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.15s ease-in-out;
+}
